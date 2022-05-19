@@ -83,3 +83,22 @@ private extension Data {
         self.init(bytes)
     }
 }
+
+struct Xor {
+    static func hex(_ a: String, _ b: String) -> String {
+        let dataA = Convert.hexToData(a)
+        let dataB = Convert.hexToData(a)
+        let xoredBytes = dataA.enumerated().map { (offset, val) in
+            dataA[offset] ^ dataB[offset]
+        }
+        return Convert.dataToHex(Data(xoredBytes))
+    }
+}
+
+enum Ciphertexts: String {
+    // TODO decrypt these values
+    // adapted from https://cryptopals.com/sets/1/challenges/3
+    case CHALLENGE_1_A = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
+    // adapted from https://id0-rsa.pub/problem/32/
+    case CHALLENGE_1_B = "ZNKIGKYGXIOVNKXOYGXKGRREURJIOVNKXCNOINOYXKGRRECKGQOSTUZYAXKNUCURJHKIGAYKOSZUURGFEZURUUQGZZNKCOQOVGMKGZZNKSUSKTZHAZOLOMAXKOZYMUZZUHKGZRKGYZROQKLOLZEEKGXYURJUXCNGZKBKXBGPJADLIVBAYKZNUYKRGYZZKTINGXGIZKXYGYZNKYURAZOUT"
+}
