@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches: [ kotlin/main ]
+  pull_request:
+    branches: [ kotlin/main ]
+
+jobs:
+  gradle:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+          echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+
+      - name: Configure Java 11 JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: temurin
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+
+      - name: Execute Gradle build
+        run: ./gradlew build
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."
