@@ -1,4 +1,5 @@
 import base64
+from enum import Enum
 
 
 # ascii
@@ -17,6 +18,20 @@ def base64_to_bytes(b64: str): return base64.b64decode(b64)
 def bytes_to_ascii(bytes: bytes): return bytes.decode()
 def bytes_to_hex(bytes: bytes): return bytes.hex()
 def bytes_to_base64(bytes: bytes): return base64.b64encode(bytes).decode()
+
+
+def xor_hex(a: str, b: str):
+    bytes_a = hex_to_bytes(a)
+    bytes_b = hex_to_bytes(b)
+    bytes_c = bytes(a ^ b for (a, b) in zip(bytes_a, bytes_b))
+    return bytes_to_hex(bytes_c)
+
+
+class Ciphertexts(Enum):
+    # adapted from https://cryptopals.com/sets/1/challenges/3
+    CHALLENGE_1_A = '1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736'
+    # adapted from https://id0-rsa.pub/problem/32/
+    CHALLENGE_1_B = 'ZNKIGKYGXIOVNKXOYGXKGRREURJIOVNKXCNOINOYXKGRRECKGQOSTUZYAXKNUCURJHKIGAYKOSZUURGFEZURUUQGZZNKCOQOVGMKGZZNKSUSKTZHAZOLOMAXKOZYMUZZUHKGZRKGYZROQKLOLZEEKGXYURJUXCNGZKBKXBGPJADLIVBAYKZNUYKRGYZZKTINGXGIZKXYGYZNKYURAZOUT'
 
 
 if __name__ == '__main__':
