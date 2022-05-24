@@ -27,6 +27,13 @@ function xor(hex1, hex2) {
   return bufferToHex(bufResult);
 }
 
+function shiftBuffer(buffer, stepSize) {
+  for (let i = 0; i<buffer.length; i++) {
+    buffer[i] = (buffer[i] + stepSize) % 128; 
+  }
+  return buffer;
+}
+
 function xorWithWrapAround(buffer, hexValue) {
   const buf1 = Buffer.from(buffer, 'hex');
   const buf2 = Buffer.from(hexValue, 'hex');
@@ -63,3 +70,19 @@ for (let i = 1; i < 128; i++) {
 results1A = results1A.sort((a,b) => solutionScore(a) - solutionScore(b));
 results1A.forEach((string) => console.log(`Score: ${solutionScore(string)}, Value: ${string}`));
 //console.log("Challenge 1A:", hexToAscii(xorWithWrapAround(CHALLENGE_1_A, asciiToHex("X"))));
+
+//////////////////
+// Challenge 1B //
+//////////////////
+let results1B = [];
+for (let i = 1; i < 128; i++) {
+  results1B.push(bufferToAscii(shiftBuffer(asciiToBuffer(CHALLENGE_1_B), i)));
+}
+results1B = results1B.sort((a,b) => solutionScore(a) - solutionScore(b));
+results1B.forEach((string) => console.log(`Score: ${solutionScore(string)}, Value: ${string}`));
+
+
+//console.log("Challenge 1B:", bufferToAscii(shiftBuffer(asciiToBuffer(CHALLENGE_1_B), 122)).replaceAll("?", "Y").replaceAll(";", "U").replaceAll("=", "W").replaceAll("@", "Z").replaceAll("<", "V"));
+// Solution including replacements: VAJDU>FCPV
+// Solution without replacements: <AJD;>FCP<
+
