@@ -27,11 +27,39 @@ function xor(hex1, hex2) {
   return bufferToHex(bufResult);
 }
 
+function xorWithWrapAround(buffer, hexValue) {
+  const buf1 = Buffer.from(buffer, 'hex');
+  const buf2 = Buffer.from(hexValue, 'hex');
+  const bufResult = buf1.map((b, i) => b ^ buf2[i % buf2.length]);
+  return bufferToHex(bufResult);
+}
+
+function solutionScore(asciiString) {
+  const matchAll = asciiString.matchAll(/[a-zA-Z ]/g)
+  let matches = Array.from(matchAll,(matchArray) => matchArray[0]);
+  return matches.length;
+}
+
 // Ciphertexts
 // adapted from https://cryptopals.com/sets/1/challenges/3
+// value is hex encoded
 const CHALLENGE_1_A = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
+
 // adapted from https://id0-rsa.pub/problem/32/
+// value is ASCII encoded
 const CHALLENGE_1_B = "ZNKIGKYGXIOVNKXOYGXKGRREURJIOVNKXCNOINOYXKGRRECKGQOSTUZYAXKNUCURJHKIGAYKOSZUURGFEZURUUQGZZNKCOQOVGMKGZZNKSUSKTZHAZOLOMAXKOZYMUZZUHKGZRKGYZROQKLOLZEEKGXYURJUXCNGZKBKXBGPJADLIVBAYKZNUYKRGYZZKTINGXGIZKXYGYZNKYURAZOUT"
 
 
-console.log(asciiToHex("SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"))
+// console.log(asciiToHex("SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"))
+
+
+//////////////////
+// Challenge 1A //
+//////////////////
+let results1A = [];
+for (let i = 1; i < 128; i++) {
+  results1A.push(hexToAscii(xorWithWrapAround(CHALLENGE_1_A, ""+i)));
+}
+results1A = results1A.sort((a,b) => solutionScore(a) - solutionScore(b));
+results1A.forEach((string) => console.log(`Score: ${solutionScore(string)}, Value: ${string}`));
+//console.log("Challenge 1A:", hexToAscii(xorWithWrapAround(CHALLENGE_1_A, asciiToHex("X"))));
