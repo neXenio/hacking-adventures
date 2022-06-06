@@ -4,6 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+passlib = "==1.7.4"
+pyargon2 = "==1.0.0"
 
 [dev-packages]
 
