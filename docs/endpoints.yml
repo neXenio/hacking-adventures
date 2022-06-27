@@ -1,0 +1,49 @@
+servers:
+  - url: localhost:8080
+paths:
+  /actuator/health:
+    method: GET
+  /register:
+    method: POST
+    request:
+      email: String
+      password: String
+      phone: String?
+      hasMfa: Boolean?
+    response:
+      authToken: String
+      mfaSecret: String?
+      mfaQr: String?
+      recoveryPhrase: String?
+  /login:
+    method: POST
+    request:
+      email: String
+      password: String
+      mfaCode: String?
+    response:
+      authToken: String
+  /reset:
+    method: POST
+    request:
+      authToken: String
+      email: String
+      newPassword: String
+  /recover:
+    method: POST
+    request:
+      authToken: String
+      email: String
+      recoveryPhrase: String
+    response:
+      secret: String
+      imageData: String
+  /users:
+    method: GET
+    request:
+      email: String
+      authToken: String
+    response:
+      email: String
+      phone: String
+      hasMfa: Boolean

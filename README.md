@@ -4,6 +4,12 @@
 
 Playground for Hacking Adventures
 
+See `/docs` for rudimentary documentation. Run the server with
+```shell
+$ docker build -t challenge3 .
+$ docker run -d -p 8080:8080 challenge3
+```
+
 ## Session 1 - Caesar and Monoalphabetic Ciphers
 - [Slides](./slides)
 - branches
