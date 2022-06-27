@@ -4,7 +4,6 @@ import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.binary.Hex
 import java.nio.charset.Charset
 
-
 object Convert {
     private val DEFAULT_CHARSET = Charset.defaultCharset()
 
