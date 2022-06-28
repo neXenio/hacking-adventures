@@ -7,7 +7,7 @@ class UserDb {
     private val db = mutableMapOf<String, UserData>()
 
     fun save(user: UserData) {
-        db[user.email] = user
+        db[user.username] = user
     }
 
     fun get(email: String): UserData {

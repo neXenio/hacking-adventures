@@ -7,10 +7,10 @@ class MfaDb {
     private val db = mutableMapOf<String, MfaData>()
 
     fun save(data: MfaData) {
-        db[data.email] = data
+        db[data.username] = data
     }
 
-    fun get(email: String): MfaData {
-        return db[email]!!
+    fun get(username: String): MfaData {
+        return db[username]!!
     }
 }

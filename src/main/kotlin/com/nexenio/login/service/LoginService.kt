@@ -23,15 +23,15 @@ class LoginService {
     private lateinit var authService: AuthService
 
     fun login(@RequestBody request: LoginRequest): LoginResponse {
-        val user = userService.get(request.email)
+        val user = userService.get(request.username)
 
         require(Hashing.sha(request.password) == user.pwHash) { "invalid login credentials" }
 
         if (user.hasMfa) {
-            require(mfaVerifyService.verify(user.email, request.mfaCode)) { "invalid MFA" }
+            require(mfaVerifyService.verify(user.username, request.mfaCode)) { "invalid MFA" }
         }
 
         println("yes")
-        return LoginResponse(authService.issueToken(user.email, user.isAdmin))
+        return LoginResponse(authService.issueToken(user.username, user.isAdmin))
     }
 }

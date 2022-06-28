@@ -24,9 +24,9 @@ class RegistrationService {
     private lateinit var authService: AuthService
 
     fun register(@RequestBody request: RegistrationRequest): RegistrationResponse {
-        require(!userService.exists(request.email)) { "${request.email} already taken" }
+        require(!userService.exists(request.username)) { "${request.username} already taken" }
 
-        val email = request.email
+        val email = request.username
         val pwHash = Hashing.sha(request.password)
         val phone = request.phone
         val hasMfa = request.hasMfa

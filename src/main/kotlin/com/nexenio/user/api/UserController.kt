@@ -19,8 +19,8 @@ class UserController {
 
     @GetMapping("/users")
     fun getUser(@RequestBody request: UserRequest): UserResponse {
-        authService.validate(request.email, request.authToken)
-        val user = userService.get(request.email)
-        return UserResponse(user.email, user.phone, user.hasMfa)
+        authService.authenticate(request.authToken)
+        val user = userService.get(request.username)
+        return UserResponse(user.username, user.phone, user.hasMfa)
     }
 }
