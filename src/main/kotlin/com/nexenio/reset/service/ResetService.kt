@@ -16,9 +16,9 @@ class ResetService {
     private lateinit var userService: UserService
 
     fun reset(request: ResetRequest) {
-        require(authService.validate(request.email, request.authToken)) { "invalid auth" }
+        require(authService.authenticate(request.authToken)) { "invalid auth" }
 
-        val user = userService.get(request.email)
+        val user = userService.get(request.username)
 
         userService.save(user.copy(pwHash = Hashing.sha(request.newPassword)))
     }

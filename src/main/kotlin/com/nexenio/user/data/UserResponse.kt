@@ -1,3 +1,3 @@
 package com.nexenio.user.data
 
-data class UserResponse(val email: String, val phone: String, val hasMfa: Boolean)
+data class UserResponse(val username: String, val phone: String, val hasMfa: Boolean)

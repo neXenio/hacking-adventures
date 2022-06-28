@@ -19,13 +19,15 @@ class MfaRecoveryService {
     private lateinit var mfaSetupService: MfaSetupService
 
     fun recover(request: MfaRecoveryRequest): MfaRecoveryResponse {
-        require(authService.validate(request.email, request.authToken)) { "invalid auth" }
+        require(authService.authenticate(request.authToken)) { "invalid auth" }
 
-        val mfaData = mfaDb.get(request.email)
+        val mfaData = mfaDb.get(request.username)
 
-        require(mfaData.recoveryPhrase == request.recoveryPhrase) { "invalid recovery phrase" }
+        if (!authService.isAdmin(request.authToken)) {
+            require(mfaData.recoveryPhrase == request.recoveryPhrase) { "invalid recovery phrase" }
+        }
 
-        val imageData = mfaSetupService.makeImageData(mfaData.email, mfaData.secret)
+        val imageData = mfaSetupService.makeImageData(mfaData.username, mfaData.secret)
         return MfaRecoveryResponse(mfaData.secret, imageData)
     }
 }

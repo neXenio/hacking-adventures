@@ -7,10 +7,10 @@ class AuthDb {
     private val db = mutableMapOf<String, AuthData>()
 
     fun save(data: AuthData) {
-        db[data.token.email] = data
+        db[data.token.username] = data
     }
 
-    fun get(email: String): AuthData {
-        return db[email]!!
+    fun get(username: String): AuthData {
+        return db[username]!!
     }
 }

@@ -24,9 +24,23 @@ class AuthService {
         return token.base64()
     }
 
-    fun validate(email: String, token: String): Boolean {
+    fun authenticate(token: String): Boolean {
         val authToken = AuthToken.fromBase64(token)
-        val authData = authDb.get(authToken.email)
+        val authData = authDb.get(authToken.username)
+
+        // check secret
+        if (authData.token.secret != authToken.secret) {
+            return false
+        }
+
+        // check expiration
+        val now = System.currentTimeMillis()
+        return now - authData.timestamp < expiration
+    }
+
+    fun isAdmin(token: String): Boolean {
+        val authToken = AuthToken.fromBase64(token)
+        val authData = authDb.get(authToken.username)
 
         // check secret
         if (authData.token.secret != authToken.secret) {
@@ -40,6 +54,6 @@ class AuthService {
         }
 
         // check authorization
-        return authData.isAdmin || authToken.email == email
+        return authData.isAdmin
     }
 }

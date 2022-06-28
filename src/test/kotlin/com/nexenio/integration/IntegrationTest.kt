@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import java.util.*
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class IntegrationTest {
@@ -25,39 +25,39 @@ class IntegrationTest {
     @Autowired
     private lateinit var codeGenerator: CodeGenerator
 
-    private fun register(email: String, password: String): ResponseEntity<RegistrationResponse> {
-        val request = RegistrationRequest(email, password)
+    private fun register(username: String, password: String): ResponseEntity<RegistrationResponse> {
+        val request = RegistrationRequest(username, password)
         return restTemplate.postForEntity("/register", request, RegistrationResponse::class.java)
     }
 
-    private fun login(email: String, password: String, mfaSecret: String): ResponseEntity<LoginResponse> {
+    private fun login(username: String, password: String, mfaSecret: String): ResponseEntity<LoginResponse> {
         val mfaCounter = Math.floorDiv(System.currentTimeMillis() / 1000, 30)
         val mfaCode = if (mfaSecret.isBlank()) "" else codeGenerator.generate(mfaSecret, mfaCounter)
-        val request = LoginRequest(email, password, mfaCode)
+        val request = LoginRequest(username, password, mfaCode)
         return restTemplate.postForEntity("/login", request, LoginResponse::class.java)
     }
 
-    private fun reset(authToken: String, email: String, newPassword: String): ResponseEntity<Void> {
-        val request = ResetRequest(authToken, email, newPassword)
+    private fun reset(authToken: String, username: String, newPassword: String): ResponseEntity<Void> {
+        val request = ResetRequest(authToken, username, newPassword)
         return restTemplate.postForEntity("/reset", request, Void::class.java)
     }
 
-    private fun <T> recover(authToken: String, email: String, recoveryPhrase: String, responseType: Class<T>): ResponseEntity<T> {
-        val request = MfaRecoveryRequest(authToken, email, recoveryPhrase)
+    private fun <T> recover(authToken: String, username: String, recoveryPhrase: String, responseType: Class<T>): ResponseEntity<T> {
+        val request = MfaRecoveryRequest(authToken, username, recoveryPhrase)
         return restTemplate.postForEntity("/recover", request, responseType)
     }
 
-    private fun makeEmail(): String {
-        val result = "test${UUID.randomUUID().hashCode()}@test.com"
+    private fun makeUserName(): String {
+        val result = "test${UUID.randomUUID().hashCode()}"
         println(result)
         return result
     }
 
     @Test
     fun registerNewUser_passes() {
-        val email = makeEmail()
+        val username = makeUserName()
         val password = "password1"
-        val response = register(email, password)
+        val response = register(username, password)
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.body).isNotNull
@@ -71,11 +71,11 @@ class IntegrationTest {
 
     @Test
     fun login_passes() {
-        val email = makeEmail()
+        val username = makeUserName()
         val password = "password2"
 
-        val registerResponse = register(email, password).body!!
-        val loginResponse = login(email, password, registerResponse.mfaSecret)
+        val registerResponse = register(username, password).body!!
+        val loginResponse = login(username, password, registerResponse.mfaSecret)
 
         assertThat(loginResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(loginResponse.body).isNotNull
@@ -84,26 +84,25 @@ class IntegrationTest {
 
     @Test
     fun resetPassword_passes() {
-        val email = makeEmail()
-        println(email)
+        val username = makeUserName()
         val oldPassword = "password3"
         val newPassword = "password4"
-        val registerResponse = register(email, oldPassword).body!!
+        val registerResponse = register(username, oldPassword).body!!
         val authToken = registerResponse.authToken
 
-        val resetResponse = reset(authToken, email, newPassword)
+        val resetResponse = reset(authToken, username, newPassword)
         assertThat(resetResponse.statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @Test
     fun recoverMfa_passes() {
-        val email = makeEmail()
+        val username = makeUserName()
         val password = "password5"
-        val registerResponse = register(email, password).body!!
+        val registerResponse = register(username, password).body!!
         val authToken = registerResponse.authToken
         val recoveryPhrase = registerResponse.recoveryPhrase
 
-        val recoverResponse = recover(authToken, email, recoveryPhrase, MfaRecoveryResponse::class.java)
+        val recoverResponse = recover(authToken, username, recoveryPhrase, MfaRecoveryResponse::class.java)
         assertThat(recoverResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(recoverResponse.body).isNotNull
         assertThat(recoverResponse.body!!.secret).isEqualTo(registerResponse.mfaSecret)
@@ -112,13 +111,13 @@ class IntegrationTest {
 
     @Test
     fun recoverMfa_forOtherUser_fails() {
-        val email = makeEmail()
+        val username = makeUserName()
         val password = "password6"
-        val registerResponse = register(email, password).body!!
+        val registerResponse = register(username, password).body!!
         val authToken = registerResponse.authToken
         val recoveryPhrase = registerResponse.recoveryPhrase
 
-        val recoverResponse = recover(authToken, "foobar", recoveryPhrase, String::class.java)
+        val recoverResponse = recover(authToken, "bob", recoveryPhrase, String::class.java)
         assertThat(recoverResponse.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
     }
 }

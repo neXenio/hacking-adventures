@@ -2,9 +2,9 @@ package com.nexenio.auth.data
 
 import com.nexenio.util.Convert
 
-data class AuthToken(val email: String, val secret: String) {
+data class AuthToken(val username: String, val secret: String) {
     fun base64(): String {
-        val ascii = "$email;$secret"
+        val ascii = "$username;$secret"
         return Convert.asciiToBase64(ascii)
     }
 

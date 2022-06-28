@@ -21,4 +21,9 @@ class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.message)
     }
 
+    @ExceptionHandler(value = [(NullPointerException::class)])
+    fun handleNullPointerException(exception: NullPointerException, request: WebRequest): ResponseEntity<String> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.message)
+    }
+
 }
