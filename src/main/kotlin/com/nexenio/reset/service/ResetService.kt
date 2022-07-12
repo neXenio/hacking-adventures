@@ -20,6 +20,6 @@ class ResetService {
 
         val user = userService.get(request.username)
 
-        userService.save(user.copy(pwHash = Hashing.sha(request.newPassword)))
+        userService.save(user.copy(pwHash = Hashing.sha(user.salt + request.newPassword)))
     }
 }

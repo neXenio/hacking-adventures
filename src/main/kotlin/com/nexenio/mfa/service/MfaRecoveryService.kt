@@ -30,4 +30,10 @@ class MfaRecoveryService {
         val imageData = mfaSetupService.makeImageData(mfaData.username, mfaData.secret)
         return MfaRecoveryResponse(mfaData.secret, imageData)
     }
+
+    fun recoveryPhrase(user: String, token: String): String {
+        require(authService.isAdmin(token)) { "invalid auth" }
+
+        return mfaDb.get(user).recoveryPhrase
+    }
 }
