@@ -26,15 +26,16 @@ class RegistrationService {
     fun register(@RequestBody request: RegistrationRequest): RegistrationResponse {
         require(!userService.exists(request.username)) { "${request.username} already taken" }
 
-        val email = request.username
-        val pwHash = Hashing.sha(request.password)
+        val username = request.username
+        val salt = SaltGenerator.getNextSalt()
+        val pwHash = Hashing.sha(salt + request.password)
         val phone = request.phone
         val hasMfa = request.hasMfa
-        val user = UserData(email, pwHash, phone, hasMfa)
+        val user = UserData(username, salt, pwHash, phone, request.hasMfa)
         userService.save(user)
 
-        val authToken = authService.issueToken(email)
-        val mfaSetup = if (hasMfa) mfaSetupService.setupDevice(email) else MfaSetupResult("", "", "")
+        val authToken = authService.issueToken(username)
+        val mfaSetup = if (hasMfa) mfaSetupService.setupDevice(username) else MfaSetupResult("", "", "")
 
         return RegistrationResponse(authToken, mfaSetup.secret, mfaSetup.imageData, mfaSetup.recoveryPhrase)
     }

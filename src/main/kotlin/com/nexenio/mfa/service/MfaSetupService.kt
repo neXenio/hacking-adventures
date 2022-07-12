@@ -28,7 +28,7 @@ class MfaSetupService {
 
     @PostConstruct
     fun insertAdmin() {
-        setupDevice("admin")
+        setupDevice("bob")
     }
 
     fun setupDevice(email: String): MfaSetupResult {

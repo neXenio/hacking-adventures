@@ -25,13 +25,12 @@ class LoginService {
     fun login(@RequestBody request: LoginRequest): LoginResponse {
         val user = userService.get(request.username)
 
-        require(Hashing.sha(request.password) == user.pwHash) { "invalid login credentials" }
+        require(Hashing.sha(user.salt + request.password) == user.pwHash) { "invalid credentials" }
 
         if (user.hasMfa) {
             require(mfaVerifyService.verify(user.username, request.mfaCode)) { "invalid MFA" }
         }
 
-        println("yes")
         return LoginResponse(authService.issueToken(user.username, user.isAdmin))
     }
 }

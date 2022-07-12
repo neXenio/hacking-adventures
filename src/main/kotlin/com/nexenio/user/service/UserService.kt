@@ -13,14 +13,16 @@ class UserService {
 
     @PostConstruct
     fun setupAdmin() {
-        val adminEmail = "admin"
-        val adminPwHash = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
-        save(UserData(adminEmail, adminPwHash, isAdmin = true))
+        val adminUserName = "admin"
+        val adminPwSalt = "3ba1e2ff0dcd"
+        val adminPwHash = "1030adead8106e4b380095ae7d2bf231fc07eeafbf643c79a862ad1979e8da87"
+        save(UserData(adminUserName, adminPwSalt, adminPwHash, hasMfa = false, isAdmin = true))
 
-        val bobEmail = "bob"
-        val bobPwHash = "911266793c9ec8582f0b72c49e544ce8703216768f931f33cb9c34a1f57f6822"
+        val bobUserName = "bob"
+        val bobPwSalt = "4a9ef75b1cf4"
+        val bobPwHash = "b02af20b4a9ce3657d62caffed7d23c0edad7e8bc583fc13d7b788840f682227"
         val bobPhone = "+49 1550 3173420"
-        save(UserData(bobEmail, bobPwHash, bobPhone, hasMfa = false))
+        save(UserData(bobUserName, bobPwSalt, bobPwHash, bobPhone, hasMfa = true))
     }
 
     fun save(user: UserData) = userDb.save(user)
