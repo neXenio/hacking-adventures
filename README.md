@@ -4,6 +4,10 @@
 
 Playground for Hacking Adventures
 
+Challenge 4 requires Python 3.8 or higher and a few dependencies (see `Pipfile`) to run locally. 
+
+Alternately, use the Jupyter Notebook (`jupyter_notebook.ipynb`) which can be uploaded to e.g. https://jupyter.org/try-jupyter/lab/. Note: all code blocks need to be run from top to bottom before you can properly start with the challenge.
+
 ## Session 1 - Caesar and Monoalphabetic Ciphers
 - [Slides](./slides)
 - branches

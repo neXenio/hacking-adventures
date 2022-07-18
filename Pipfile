@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-
-[dev-packages]
+sympy = "==1.10.1"
+primefac = "==2.0.12"
 
 [requires]
 python_version = "3.9"
